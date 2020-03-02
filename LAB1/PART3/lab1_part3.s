@@ -1,31 +1,37 @@
-.equ		JTAG_UART_BASE,		0x10001000			# address of first JTAG UART register
-.equ		DATA_OFFSET,		0					# offset of JTAG UART data register
-.equ		STATUS_OFFSET,		4					# offset of JTAG UART status register
-.equ		WSPACE_MASK,		0xFFFF				# used in AND application to check status
-
 .text
 .global		_start
 .org		0x0000
 
+
+.equ		DATA_OFFSET,		0					# offset of JTAG UART data register
+.equ		STATUS_OFFSET,		4					# offset of JTAG UART status register
+.equ		WSPACE_MASK,		0xFFFF				# used in AND application to check status
+.equ		JTAG_UART_BASE,		0x10001000
+
+
 _start:
 
 Main:
-			movi 	sp, 0x7FFFFC		# initializing stack pointer
+			movia	sp, 0x7FFFFC			#intial stack opinter 
 			movi 	r2, '\n'			# load into r2
 			call 	PrintChar			# call function
 			call	exp
 			
 			IF:
-					movi 	r4, 26
-					bne 	r3, r4, ELSE
+					
+					movi	r3, 26
+					bne 	r2, r3, ELSE
 			THEN:
 					movi 	r2, 'Y'
 					call	PrintChar
-					br		END_IF
+					br 	END_IF
 			ELSE:
 					movi 	r2, 'N'
 					call	PrintChar
 			END_IF:
+			
+			break
+
 
 
 PrintChar:
@@ -56,10 +62,8 @@ exp:							# start now
 		addi	r3, r3, 2		# add immediate T and 2, assign to R3
 		div		r2, r2, r3		# divide R2 with R4, assign to R2
 		stw		r2, P(r0)		# store in W
-		ret
+		ret 
 
-loop:
-		br		loop			# end program
 
 		.org 0x1000
 P:		.skip 4					# save four bytes for sum
@@ -69,3 +73,4 @@ S:		.word 14
 T:		.word 5
 		.end
 
+.end

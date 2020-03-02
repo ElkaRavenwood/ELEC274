@@ -10,6 +10,7 @@
 _start:
 
 Main:
+			movi 	sp, 0x0100
 			movi 	r2, '\n'			# load into r2
 			call 	PrintChar			# call function
 			movi 	r2, 'D'
@@ -18,10 +19,13 @@ Main:
 			call 	PrintChar
 			movi 	r2, 'O'
 			call 	PrintChar
+loop:
+			br	loop
+		
 
 PrintChar:
 			subi	sp, sp, 8			# adjust stack pointer down to reserve space
-			stw		r3, 4(sp)			# save value of r3 so it can be a temp
+			stw		r3, 4(sp)			# save valueof r
 			stw		r4, 0(sp)
 			movia	r3, JTAG_UART_BASE
 pc_loop:
@@ -33,8 +37,5 @@ pc_loop:
 			ldw 	r4, 0(sp)
 			addi	sp, sp, 8
 			ret 
-
-_end:
-		br		_end			# end program
 
 .end
